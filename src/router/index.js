@@ -34,6 +34,9 @@ const route = [
                 component: Tables,
             },
         ]
+    },{
+        path: '/',
+        component: Home,
     },
 ]
 

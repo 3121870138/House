@@ -1,13 +1,19 @@
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router-dom';
-import cs from 'classnames';
+import cs from 'classnames'
+import { withRouter } from 'react-router-dom'
 import './style.less';
 
-export default class extends PureComponent {
+export default @withRouter
+class extends PureComponent {
     render() {
-        const { title, path, color } = this.props
+        const { title, path, Authority } = this.props
         return (
-            <Link className={cs({ component_nav: true ,component_nav_black: color })} to={path}>
+            Authority &&
+            <Link
+                to={path}
+                className={cs({ h1Style: path === this.props.location.pathname })}
+            >
                 {title}
             </Link>
         )

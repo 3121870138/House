@@ -47,6 +47,13 @@
             .anticon {
                 font-size: 28px;
             }
+
+            &:hover{
+                cursor: pointer;
+                .anticon {
+                    color: aqua;
+                }
+            }
         }
 
 
@@ -88,8 +95,22 @@
         .home_bot_right {
             flex: 1;
             overflow: auto;
+            display: flex;
+            flex-direction: column;
+            h1 {
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 15px;
+            }
             padding: 20px;
             box-sizing: border-box;
+
+            .bot_right_router {
+                flex: 1;
+                overflow: auto;
+                padding: 10px 0;
+                box-sizing: border-box;
+
+            }
         }
 
     }
