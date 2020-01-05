@@ -8,6 +8,7 @@ import {
     Register,
     Tables,
     Kong,
+    Vip,
 } from './router' // 引入页面
 
 
@@ -26,7 +27,10 @@ const route = [
                 path: '/kong',
                 component: Kong,
             },{
-                path: '/tables',
+                path: '/vip',
+                component: Vip,
+            },{
+                path: '/',
                 component: Tables,
             },
         ]
