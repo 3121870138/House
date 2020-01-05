@@ -26,7 +26,7 @@ class extends React.PureComponent {
     if (!localStorage.getItem('token')) {
       const pathname = history.location.pathname
       // 如果是登录页 不跳转 否则会死循环
-      if (!pathname.includes('/login')) {
+      if (!pathname.includes('/login') && !pathname.includes('/register')) {
        	history.push('/login')
       }
     }
