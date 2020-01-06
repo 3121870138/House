@@ -1,78 +1,111 @@
 import React from 'react';
 import './styles.less'
-import { Input, Button, message} from 'antd';
-import { connect } from 'react-redux'
 import { 
-    get_username, 
-    get_password, 
-    get_againPassword 
-} from '@/actions/register'
+    Input, 
+    Button, 
+    message, 
+    Form, 
+    Icon, 
+} from 'antd';
 import { requestPost } from '@/utils/request'
 import api from '@/services/api'
-import qs from 'qs'
-export default @connect(state => {
-    return {
-        userName: state.register.regUserName,
-        passWord: state.register.regPassWord,
-        rePassWord: state.register.regAgainPassWord
-    }
-}, {
-    get_username,
-    get_password,
-    get_againPassword
-})
+export default @Form.create({ name: 'normal_login' })
 class extends React.Component {
     
-    //点击注册
-    register = () => {
-        const { userName, passWord, rePassWord  } = this.props;
-        if(userName !== '' && passWord !== '') {
-            if(passWord !== rePassWord) {
-                message.error('两次密码不一致')
-            } else {
-                requestPost(api.Reg, {userName, passWord, rePassWord})
+    handleSubmit = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log(values);
+                requestPost(api.Reg, values)
                     .then(res => {
                         console.log(res);
-                        
+                        if(res.data.code === 200) {
+                            message.success('注册成功')
+                        } else {
+                            message.error('注册失败')
+                        }
                     })
             }
-        } else {
-            message.error('用户名或密码不能为空')
+        })
+    }
+
+    textPassWord = (rule, value, callback) => {
+        const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/ig
+        if (value && !value.match(reg)) {
+            callback('必须有字母和数字！')
         }
+        callback()
     }
 
     render() {
-        const { userName, passWord, rePassWord } = this.props
+        const { getFieldDecorator } = this.props.form;
         return (
             <div className='register'>
                 <div className="regUser">
-                    <p>
-                        <Input 
-                            onChange={this.props.get_username}
-                            value={userName}  
-                            placeholder="用户名"
-                        />
-                    </p>
-                    <p>
-                        <Input.Password 
-                            onChange={this.props.get_password}
-                            value={passWord}   
-                            placeholder="密码"
-                        />
-                        
-                    </p>
-                    <p>
-                        <Input.Password 
-                            onChange={this.props.get_againPassword}
-                            value={rePassWord}   
-                            placeholder="确认密码"
-                        />
-                    </p>
-                    <p>
-                        <Button type="primary" onClick={this.register}>
-                            注册
-                        </Button>
-                    </p>
+                    <Form 
+                        onSubmit={this.handleSubmit} className="login-form"
+                    >
+                        <Form.Item>
+                        {getFieldDecorator('userName', {
+                            rules: [
+                                { 
+                                    required: true, 
+                                    message: 'Please input your username!',
+                                    min: 6,
+                                    max: 18,
+                                }
+                            ],
+                        })(
+                            <Input
+                            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            placeholder="Username"
+                            />,
+                        )}
+                        </Form.Item>
+                        <Form.Item>
+                        {getFieldDecorator('passWord', {
+                            rules: [{
+                                    validator: this.textPassWord
+                                },
+                                { 
+                                    required: true, 
+                                    message: 'Please input your password!',
+                                }
+                            ],
+                        })(
+                            <Input
+                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            type="password"
+                            placeholder="Password"
+                            />,
+                        )}
+                        </Form.Item>
+                        <Form.Item>
+                        {getFieldDecorator('rePassWord', {
+                            rules: [
+                                { 
+                                    required: true, 
+                                    message: 'Please input your rePassWord!' ,
+                                }
+                            ],
+                        })(
+                            <Input
+                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            type="password"
+                            placeholder="rePassWord"
+                            />,
+                        )}
+                        </Form.Item>
+                        <Form.Item>
+                            <Button 
+                                type="primary" 
+                                htmlType="submit" className="login-form-button"
+                            >
+                                register
+                            </Button>
+                        </Form.Item>
+                    </Form>
                 </div>
             </div>
         )
