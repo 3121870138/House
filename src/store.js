@@ -22,8 +22,11 @@ const myPersistReducer = combineReducers({
         rootPersistConfig,
         rdc.login
     ),
+<<<<<<< HEAD
     register: rdc.register,
     table: rdc.table,
+=======
+>>>>>>> wang
     
 })
 
