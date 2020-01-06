@@ -5,5 +5,58 @@
     .right{
         flex: 1;
         height: 100%;
+        .building{
+            width: 100%;
+           .top{
+               width: 100%;
+               display: flex;
+               p{
+                   padding: 8px 20px 8px 80px;
+                   box-sizing: border-box;
+               }
+                ul{
+                    display: flex;
+                    padding: 8px 0;
+                    box-sizing: border-box;
+                    color: white;
+                    li{
+                        padding: 0 8px;
+                        margin: 0 3px;
+                        box-sizing: border-box;
+                    }
+                    li:first-child{
+                        background: red;
+                    }
+                    li:nth-child(2){
+                        background: blue;
+                    }
+                    li:nth-child(3){
+                        background: rgb(0, 255, 191);
+                    }
+                    li:nth-child(4){
+                        background: purple;
+                    }
+                    li:nth-child(5){
+                        background: brown;
+                    }
+                    li:nth-child(6){
+                        background: green;
+                    }
+                    li:last-child{
+                        background: #ccc;
+                    }
+                }
+           }
+           table{
+               width: 100%;
+               text-align: center;
+               thead{
+                   background: blue;
+                   color: white;
+                   padding: 100px 0;
+                   box-sizing: border-box;
+               }
+           }
+        }
     }
 }
