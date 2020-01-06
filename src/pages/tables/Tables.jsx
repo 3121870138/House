@@ -1,9 +1,52 @@
 import React from 'react';
 import './styles.less'
 import { Table, Divider } from 'antd';
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { toTable } from '@/actions/table'
+import { TABLE_DATA_POST } from '@/constants/actionTypes'
+import { hump } from '@/utils/string'
 
+console.log(toTable, 'toTable');
 
-export default class extends React.PureComponent {
+export default @withRouter
+@connect(state => {
+    console.log(state);
+    return {
+    }
+}, {
+    toTable: toTable[hump(TABLE_DATA_POST)],
+})
+class extends React.PureComponent {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            plot: '',
+            building: '',
+            floor: '',
+            room: '',
+            status: '',
+        }
+        const {
+            plot,
+            building,
+            floor,
+            room,
+            status,
+        } = this.state
+
+        const { toTable } = this.props
+        toTable({
+            limit: 30,
+            page: 1
+        })
+            .then(res => {
+                console.log(res);
+
+            })
+    }
 
     // 编辑
     edit = items => {
@@ -20,7 +63,7 @@ export default class extends React.PureComponent {
     }
 
     render() {
-
+        console.log(this.props)
         const columns = [
             {
                 title: 'Name',
@@ -90,7 +133,7 @@ export default class extends React.PureComponent {
                     dataSource={data}
                     bordered
                 />
-            </>    
+            </>
         )
     }
 }
