@@ -19,7 +19,14 @@ class extends React.PureComponent {
         }
     }
     subLogin = () => {
-        const { props: { login, save_token }, state: { userName, passWord } } = this
+        const { 
+            props: { 
+                login, 
+                save_token, 
+                history: { push } 
+            },
+            state: { userName, passWord } 
+        } = this
         if(userName != "" && passWord != "") {
             login({
                 userName,
@@ -32,7 +39,7 @@ class extends React.PureComponent {
                         })
                         localStorage.token = res.payload.data.result
                         message.success('登陆成功')
-                        this.props.history.push('/')
+                        push('/')
                     } else {
                         message.error('登陆失败')
                     }
