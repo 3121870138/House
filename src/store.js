@@ -23,6 +23,7 @@ const myPersistReducer = combineReducers({
         rdc.login
     ),
     register: rdc.register,
+    table: rdc.table,
     
 })
 

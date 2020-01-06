@@ -8,6 +8,8 @@ import {
     message,
     Select
 } from 'antd';
+import { requestPost } from '@/utils/request'
+
 const { Option } = Select;
 
 export default @Form.create({
@@ -67,7 +69,15 @@ class extends React.Component {
                 console.log(foot);
                 
                 if(foot === '点击添加') {
-                    
+                    requestPost('/Home/Apis/samplePut', {
+                        id: '',
+                        name: 'lxc',
+                        age: 22,
+                    })
+                        .then(res => {
+                            console.log(res);
+                            
+                        })
                 } else if ( foot === '保存' ){
                     
                 }
