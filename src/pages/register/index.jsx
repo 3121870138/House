@@ -16,10 +16,8 @@ class extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
                 requestPost(api.Reg, values)
                     .then(res => {
-                        console.log(res);
                         if(res.data.code === 200) {
                             message.success('注册成功')
                             this.props.history.push('/login')
