@@ -15,19 +15,19 @@ const { Option } = Select;
 export default @Form.create({
     name: 'register',
     mapPropsToFields(props) {
-
-        // return Object.entries(props.editData).reduce((v0, [k, v]) => {
-        //     v0[k] = Form.createFormField({
-        //         value: v,
-        //     })
-        //     return v0
-        // }, {})
-        // return {
-        //     name: Form.createFormField({
-        //         value: props.data.name,
-        //    }),
-        // }
-    }
+        // const data = JSON.parse(props.editData.info) ? JSON.parse(props.editData.info) : {}
+        return Object.entries(props.editData.info ? JSON.parse(props.editData.info) : {}).reduce((v0, [k, v]) => {
+            v0[k] = Form.createFormField({
+                value: v,
+            })
+            return v0
+            }, {})
+            // return {
+            //     name: Form.createFormField({
+            //         value: props.data.name,
+            //    }),
+            // }
+        }
 
 })
 class extends React.Component {
@@ -54,9 +54,9 @@ class extends React.Component {
     };
 
     // 下拉框
-    handleChange = value => {
-        console.log(`selected ${value}`);
-    }
+    // handleChange = value => {
+    //     console.log(`selected ${value}`);
+    // }
 
 
     // 点击 提交
@@ -64,30 +64,35 @@ class extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log(values, 'values');
                 const { foot } = this.props
-                console.log(foot);
-                
-                if(foot === '点击添加') {
+
+                if (foot === '点击添加') {
                     requestPost('/Home/Apis/samplePut', {
                         id: '',
-                        name: 'lxc',
-                        age: 22,
+                        token: localStorage.token,
+                        info: {
+                            ...values,
+                        }
                     })
                         .then(res => {
-                            console.log(res);
-                            
+                            if (res.data.msg === 'succeed') {
+                                message.success('添加成功')
+                                this.props.handleCancel()
+                            } else {
+                                message.error('添加失败')
+                            }
+                            this.props.dataAll() //重新获取
                         })
-                } else if ( foot === '保存' ){
-                    
+                } else if (foot === '保存') {
+
                 }
-                
+
             }
         });
     };
 
-     // 点击下载
-     download = () => {
+    // 点击下载
+    download = () => {
         const { table_Data } = this.props
         const blob = new Blob([JSON.stringify(table_Data)], { type: 'text/plain' }) //{type : 'application/json'}
         let a = document.createElement('a')
@@ -105,10 +110,11 @@ class extends React.Component {
     // 点击重置
     handleReset = () => {
         this.props.form.resetFields();
-      };
-    
+    };
+
 
     render() {
+
         const { title, visible, confirmLoading, foot } = this.props
 
         const { getFieldDecorator } = this.props.form;
@@ -150,10 +156,12 @@ class extends React.Component {
                 >
                     <Form {...formItemLayout} onSubmit={this.handleSubmit}>
 
+                        {/* onChange={this.handleChange} */}
+
                         <Form.Item label="小区" >
                             {getFieldDecorator('plot', {
                             })(
-                                <Select style={{ width: 120 }} onChange={this.handleChange}>
+                                <Select style={{ width: 120 }} >
                                     <Option value="jack">Jack</Option>
                                     <Option value="lucy">Lucy</Option>
                                     <Option value="Yiminghe">yiminghe</Option>
@@ -165,7 +173,7 @@ class extends React.Component {
                         <Form.Item label="栋号" >
                             {getFieldDecorator('building', {
                             })(
-                                <Select style={{ width: 120 }} onChange={this.handleChange}>
+                                <Select style={{ width: 120 }} >
                                     <Option value="jack">Jack</Option>
                                     <Option value="lucy">Lucy</Option>
                                     <Option value="Yiminghe">yiminghe</Option>
@@ -187,7 +195,7 @@ class extends React.Component {
                         <Form.Item label="状态" >
                             {getFieldDecorator('status', {
                             })(
-                                <Select style={{ width: 120 }} onChange={this.handleChange}>
+                                <Select style={{ width: 120 }} >
                                     <Option value="在建">在建</Option>
                                     <Option value="建成待租">建成待租</Option>
                                     <Option value="已配租">已配租</Option>

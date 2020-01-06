@@ -2,21 +2,9 @@ import React from 'react';
 import './styles.less'
 import { Table, Divider } from 'antd';
 import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { toTable } from '@/actions/table'
-import { TABLE_DATA_POST } from '@/constants/actionTypes'
-import { hump } from '@/utils/string'
-
-console.log(toTable, 'toTable');
+// import { connect } from 'react-redux'
 
 export default @withRouter
-@connect(state => {
-    console.log(state);
-    return {
-    }
-}, {
-    toTable: toTable[hump(TABLE_DATA_POST)],
-})
 class extends React.PureComponent {
 
     constructor(props) {
@@ -28,33 +16,20 @@ class extends React.PureComponent {
             floor: '',
             room: '',
             status: '',
+            editData: {},
+
         }
-        const {
-            plot,
-            building,
-            floor,
-            room,
-            status,
-        } = this.state
-
-        const { toTable } = this.props
-        toTable({
-            limit: 30,
-            page: 1
-        })
-            .then(res => {
-                console.log(res);
-
-            })
+       
     }
 
     // 编辑
     edit = items => {
-        console.log(items);
+        console.log(this.props);
         this.props.showModal({
             title: '编辑',
             foot: '保存'
         })
+        this.props.getEditData(items)
     }
 
     // 点击删除
@@ -63,20 +38,41 @@ class extends React.PureComponent {
     }
 
     render() {
-        console.log(this.props)
+        const { dataList } = this.props
+        
         const columns = [
             {
-                title: 'Name',
-                dataIndex: 'name',
+                title: 'ID',
+                dataIndex: 'id',
                 render: text => <a>{text}</a>,
             },
             {
-                title: 'Age',
-                dataIndex: 'age',
+                title: '小区',
+                dataIndex: 'plot',
+                render: (text, items) => {
+                    return JSON.parse(items.info) ? JSON.parse(items.info).plot : '暂无数据'
+                }
             },
             {
-                title: 'Address',
-                dataIndex: 'address',
+                title: '栋号',
+                dataIndex: 'building',
+                render: (text, items) => {
+                    return JSON.parse(items.info) ? JSON.parse(items.info).building : '暂无数据'
+                }
+            },
+            {
+                title: '层号',
+                dataIndex: 'floor',
+                render: (text, items) => {
+                    return JSON.parse(items.info) ? JSON.parse(items.info).floor : '暂无数据'
+                }
+            },
+            {
+                title: '状态',
+                dataIndex: 'status',
+                render: (text, items) => {
+                    return JSON.parse(items.info) ? JSON.parse(items.info).status : '暂无数据'
+                }
             },
             {
                 title: 'Action',
@@ -90,32 +86,7 @@ class extends React.PureComponent {
                 ),
             },
         ];
-        const data = [
-            {
-                key: '1',
-                name: 'John Brown',
-                age: 32,
-                address: 'New York No. 1 Lake Park',
-            },
-            {
-                key: '2',
-                name: 'Jim Green',
-                age: 42,
-                address: 'London No. 1 Lake Park',
-            },
-            {
-                key: '3',
-                name: 'Joe Black',
-                age: 32,
-                address: 'Sidney No. 1 Lake Park',
-            },
-            {
-                key: '4',
-                name: 'Disabled User',
-                age: 99,
-                address: 'Sidney No. 1 Lake Park',
-            },
-        ];
+  
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -125,12 +96,14 @@ class extends React.PureComponent {
                 name: record.name,
             }),
         };
+
         return (
             <>
                 <Table
                     rowSelection={rowSelection}
                     columns={columns}
-                    dataSource={data}
+                    dataSource={dataList}
+                    rowKey={v => v.id}
                     bordered
                 />
             </>

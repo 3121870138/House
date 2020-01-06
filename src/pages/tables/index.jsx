@@ -1,11 +1,23 @@
 import React from 'react';
 import './styles.less'
 import Tables from './Tables'
-import axios from 'axios'
 import Modal from './Modal'
 import { Button } from 'antd'
+import { connect } from 'react-redux'
+import { toTable } from '@/actions/table'
+import { TABLE_DATA_POST } from '@/constants/actionTypes'
+import { hump } from '@/utils/string'
 
-export default class extends React.PureComponent {
+
+export default @connect(state => {
+    console.log(state, 'state');
+    return {
+        tableData: state.table.tableData
+    }
+}, {
+    toTable: toTable[hump(TABLE_DATA_POST)],
+})
+class extends React.PureComponent {
     constructor(props) {
         super(props)
 
@@ -14,16 +26,21 @@ export default class extends React.PureComponent {
             confirmLoading: false,
             title: '',
             foot: '',
+            data: '',
+            editData: [],
 
         }
+        this.dataAll() // 获取全部数据 
+    }
 
-        // axios.post('/api/Home/Apis/sampleList', {
-        //     limit: 20,
-        //     page: 1
-        // })
-        //     .then(res => {
-        //         console.log(res, 'res');
-        //     })
+    // 获取全部数据 
+    dataAll = () => {
+        const { toTable } = this.props
+        toTable({
+            limit: 30,
+            page: 1,
+            token: localStorage.token,
+        })
     }
 
     // 控制对话框 显示
@@ -34,7 +51,7 @@ export default class extends React.PureComponent {
         })
     }
 
- 
+
 
     // 点击ok
     handleOk = () => {
@@ -56,11 +73,22 @@ export default class extends React.PureComponent {
         });
     };
 
+    // Tables 组件 点击编辑 传给父组件
+    getEditData = items => {
+        console.log(items, 'items');
+        
+        this.setState({
+            editData: items
+        })
+        
+    }
+
 
 
 
     render() {
-        const { visible, confirmLoading, title, foot } = this.state
+        const { list, } = this.props.tableData
+        const { visible, confirmLoading, title, foot, editData } = this.state
         return (
             <div className='tables'>
                 <div className='tables_title'>
@@ -86,7 +114,9 @@ export default class extends React.PureComponent {
                             handleOk={this.handleOk}
                             handleCancel={this.handleCancel}
                             foot={foot}
-                        />  
+                            dataAll={this.dataAll} //全部数据
+                            editData={editData}
+                        />
 
 
                         <Button>下载</Button>
@@ -97,10 +127,11 @@ export default class extends React.PureComponent {
                 </div>
                 <div className='tables_listdata'>
                     {/* bordered  */}
-                    <Tables 
+                    <Tables
                         showModal={this.showModal}  // 显示对话库
-
-
+                        dataAll={this.dataAll} //全部数据
+                        dataList={list}
+                        getEditData={this.getEditData}
                     />
                 </div>
             </div>

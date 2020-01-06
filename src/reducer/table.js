@@ -6,5 +6,7 @@ const initState = {
 }
 
 export default handleActions({
-    [TABLE_DATA_POST]: (state, action) => ({ ...state, tableData: action.payload })
+    [TABLE_DATA_POST]: (state, action) => {
+        return { ...state, tableData: action.payload.data.result }
+    }
 }, initState)
