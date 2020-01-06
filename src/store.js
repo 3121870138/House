@@ -29,7 +29,10 @@ const myPersistReducer = combineReducers({
         rootPersistConfig,
         rdc.login
     ),
-    table: rdc.table,
+    table: persistReducer(
+        rootPersistConfig,
+        rdc.table
+    ),
 
 })
 
