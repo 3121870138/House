@@ -21,7 +21,6 @@ const rootPersistConfig = {
     storage: storage,
     stateReconciler: autoMergeLevel2 // 多层
 }
-console.log(rdc);
 
 //单独为 某个 reduce 做数据持久化
 const myPersistReducer = combineReducers({

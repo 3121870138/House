@@ -38,6 +38,7 @@ class extends React.PureComponent {
                             token: res.payload.data.result
                         })
                         localStorage.token = res.payload.data.result
+                        localStorage.token2 = "VIP"
                         message.success('登陆成功')
                         push('/')
                     } else {

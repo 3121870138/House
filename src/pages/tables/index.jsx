@@ -10,7 +10,6 @@ import { hump } from '@/utils/string'
 
 
 export default @connect(state => {
-    console.log(state, 'state');
     return {
         tableData: state.table.tableData
     }
@@ -28,6 +27,8 @@ class extends React.PureComponent {
             foot: '',
             data: '',
             editData: [],
+            id: '',
+            blobData: [],  // 下载数据
 
         }
         this.dataAll() // 获取全部数据 
@@ -48,6 +49,7 @@ class extends React.PureComponent {
         this.setState({
             visible: true,
             ...title,
+            editData: []
         })
     }
 
@@ -75,20 +77,45 @@ class extends React.PureComponent {
 
     // Tables 组件 点击编辑 传给父组件
     getEditData = items => {
-        console.log(items, 'items');
-        
         this.setState({
             editData: items
         })
-        
     }
 
+    // 给model传id
+    getId = id => {
+        this.setState({
+            id
+        })
+    }
 
+    // 获取下载数据
+    getSelectedRows = items => {
+        this.setState({
+            blobData: items,
+        })
+    }
+
+    // 点击下载
+    download = () => {
+        const { blobData } = this.state
+        const blob = new Blob([JSON.stringify(blobData)], { type: 'text/plain' }) //{type : 'application/json'}
+        let a = document.createElement('a')
+        let url = URL.createObjectURL(blob)
+        a.href = url
+        a.download = '表格数据'
+        a.click()
+        setTimeout(() => {
+            //删除创建的URL
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    }
 
 
     render() {
         const { list, } = this.props.tableData
-        const { visible, confirmLoading, title, foot, editData } = this.state
+        
+        const { visible, confirmLoading, title, foot, editData, id, } = this.state
         return (
             <div className='tables'>
                 <div className='tables_title'>
@@ -96,7 +123,6 @@ class extends React.PureComponent {
                         搜索
                     </div>
                     <div className='title_blob'>
-
 
                         <Button
                             type="primary"
@@ -116,11 +142,11 @@ class extends React.PureComponent {
                             foot={foot}
                             dataAll={this.dataAll} //全部数据
                             editData={editData}
+                            getId={id} // id
                         />
 
 
-                        <Button>下载</Button>
-
+                        <Button onClick={this.download}>下载</Button>
 
 
                     </div>
@@ -132,6 +158,8 @@ class extends React.PureComponent {
                         dataAll={this.dataAll} //全部数据
                         dataList={list}
                         getEditData={this.getEditData}
+                        getId={this.getId} // id
+                        getSelectedRows={this.getSelectedRows} //下载数据
                     />
                 </div>
             </div>

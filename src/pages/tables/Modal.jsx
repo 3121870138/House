@@ -13,7 +13,6 @@ import { requestPost } from '@/utils/request'
 const { Option } = Select;
 
 export default @Form.create({
-    name: 'register',
     mapPropsToFields(props) {
         // const data = JSON.parse(props.editData.info) ? JSON.parse(props.editData.info) : {}
         return Object.entries(props.editData.info ? JSON.parse(props.editData.info) : {}).reduce((v0, [k, v]) => {
@@ -21,13 +20,8 @@ export default @Form.create({
                 value: v,
             })
             return v0
-            }, {})
-            // return {
-            //     name: Form.createFormField({
-            //         value: props.data.name,
-            //    }),
-            // }
-        }
+        }, {})
+    }
 
 })
 class extends React.Component {
@@ -41,7 +35,8 @@ class extends React.Component {
                 floor: '',
                 room: '',
                 status: '',
-            }
+            },
+            buildingData: [],
         }
     }
 
@@ -54,9 +49,11 @@ class extends React.Component {
     };
 
     // 下拉框
-    // handleChange = value => {
-    //     console.log(`selected ${value}`);
-    // }
+    handleChange = value => {
+        this.setState({
+            buildingData: value
+        })
+    }
 
 
     // 点击 提交
@@ -77,35 +74,39 @@ class extends React.Component {
                         .then(res => {
                             if (res.data.msg === 'succeed') {
                                 message.success('添加成功')
-                                this.props.handleCancel()
                             } else {
                                 message.error('添加失败')
                             }
+                            this.props.handleCancel()
                             this.props.dataAll() //重新获取
                         })
                 } else if (foot === '保存') {
+                    // 
+                    const { getId } = this.props
 
+                    requestPost('/Home/Apis/samplePut', {
+                        token: localStorage.token,
+                        info: {
+                            id: getId,
+                            ...values,
+                        }
+                    })
+                        .then(res => {
+                            if (res.data.msg === 'succeed') {
+                                message.success('修改成功')
+                            } else {
+                                message.error('修改失败')
+                            }
+                        })
+                    this.props.dataAll() //重新获取
+                    this.props.handleCancel()
                 }
 
             }
         });
     };
 
-    // 点击下载
-    download = () => {
-        const { table_Data } = this.props
-        const blob = new Blob([JSON.stringify(table_Data)], { type: 'text/plain' }) //{type : 'application/json'}
-        let a = document.createElement('a')
-        let url = URL.createObjectURL(blob)
-        a.href = url
-        a.download = '表格数据'
-        a.click()
-        setTimeout(() => {
-            //删除创建的URL
-            window.URL.revokeObjectURL(url)
-        }, 0)
 
-    }
 
     // 点击重置
     handleReset = () => {
@@ -142,6 +143,49 @@ class extends React.Component {
             },
         };
 
+        const selectJson = [
+            {
+                id: 0,
+                text: '瑞景河畔',
+                items: [
+                    { id: 0, text: '瑞景河畔16号楼' },
+                    { id: 1, text: '瑞景河畔17号楼' },
+                    { id: 2, text: '瑞景河畔18号楼' },
+                    { id: 3, text: '瑞景河畔19号楼' },
+                    { id: 4, text: '瑞景河畔20号楼' },
+                    { id: 5, text: '瑞景河畔22号楼' },
+                    { id: 6, text: '瑞景河畔23号楼' },
+                    { id: 7, text: '瑞景河畔24号楼' },
+                ]
+            }, {
+                id: 1,
+                text: '蔚蓝小区',
+                items: [
+                    { id: 0, text: '蔚蓝小区16号楼' },
+                    { id: 1, text: '蔚蓝小区17号楼' },
+                    { id: 2, text: '蔚蓝小区18号楼' },
+                    { id: 3, text: '蔚蓝小区19号楼' },
+                    { id: 4, text: '蔚蓝小区20号楼' },
+                    { id: 5, text: '蔚蓝小区22号楼' },
+                    { id: 6, text: '蔚蓝小区23号楼' },
+                    { id: 7, text: '蔚蓝小区24号楼' },
+                ]
+            }, {
+                id: 2,
+                text: '和盛园小区',
+                items: [
+                    { id: 0, text: '和盛园小区16号楼' },
+                    { id: 1, text: '和盛园小区17号楼' },
+                    { id: 2, text: '和盛园小区18号楼' },
+                    { id: 3, text: '和盛园小区19号楼' },
+                    { id: 4, text: '和盛园小区20号楼' },
+                    { id: 5, text: '和盛园小区22号楼' },
+                    { id: 6, text: '和盛园小区23号楼' },
+                    { id: 7, text: '和盛园小区24号楼' },
+                ]
+            }
+        ]
+
 
         return (
             <div>
@@ -162,9 +206,14 @@ class extends React.Component {
                             {getFieldDecorator('plot', {
                             })(
                                 <Select style={{ width: 120 }} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="Yiminghe">yiminghe</Option>
+                                    {
+                                        selectJson.map((v, k) => {
+                                            return (
+                                                <Option value={v.text} key={k} onClick={() => this.handleChange(v.items)}>{v.text}</Option>
+                                            )
+
+                                        })
+                                    }
                                 </Select>
                             )}
                         </Form.Item>
@@ -174,9 +223,14 @@ class extends React.Component {
                             {getFieldDecorator('building', {
                             })(
                                 <Select style={{ width: 120 }} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="Yiminghe">yiminghe</Option>
+                                    {
+                                        this.state.buildingData.map((v, k) => {
+                                            return (
+                                                <Option value={v.text} key={k} >{v.text}</Option>
+                                            )
+
+                                        })
+                                    }
                                 </Select>
                             )}
                         </Form.Item>

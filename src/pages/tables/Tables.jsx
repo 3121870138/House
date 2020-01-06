@@ -2,7 +2,6 @@ import React from 'react';
 import './styles.less'
 import { Table, Divider } from 'antd';
 import { withRouter } from 'react-router-dom'
-// import { connect } from 'react-redux'
 
 export default @withRouter
 class extends React.PureComponent {
@@ -11,25 +10,19 @@ class extends React.PureComponent {
         super(props)
 
         this.state = {
-            plot: '',
-            building: '',
-            floor: '',
-            room: '',
-            status: '',
             editData: {},
-
         }
        
     }
 
     // 编辑
     edit = items => {
-        console.log(this.props);
         this.props.showModal({
             title: '编辑',
             foot: '保存'
         })
         this.props.getEditData(items)
+        this.props.getId(items.id)  // 给Modal使用id
     }
 
     // 点击删除
@@ -75,6 +68,14 @@ class extends React.PureComponent {
                 }
             },
             {
+                title: '介绍',
+                dataIndex: 'mark',
+                ellipsis: true,
+                render: (text, items) => {
+                    return JSON.parse(items.info) ? JSON.parse(items.info).mark : '暂无数据'
+                }
+            },
+            {
                 title: 'Action',
                 key: 'action',
                 render: (text, record) => (
@@ -89,7 +90,7 @@ class extends React.PureComponent {
   
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                this.props.getSelectedRows(selectedRows)
             },
             getCheckboxProps: record => ({
                 //disabled: record.name === 'Disabled User', // Column configuration not to be checked
