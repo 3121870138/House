@@ -4,6 +4,21 @@ import { Table, Divider } from 'antd';
 
 
 export default class extends React.PureComponent {
+
+    // 编辑
+    edit = items => {
+        console.log(items);
+        this.props.showModal({
+            title: '编辑',
+            foot: '保存'
+        })
+    }
+
+    // 点击删除
+    delete = items => {
+        console.log(items);
+    }
+
     render() {
 
         const columns = [
@@ -25,9 +40,9 @@ export default class extends React.PureComponent {
                 key: 'action',
                 render: (text, record) => (
                     <span>
-                        <a>Edit</a>
+                        <a onClick={() => this.edit(record)}>Edit</a>
                         <Divider type="vertical" />
-                        <a>Delete</a>
+                        <a onClick={() => this.delete(record)}>Delete</a>
                     </span>
                 ),
             },
