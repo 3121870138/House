@@ -22,6 +22,7 @@ class extends React.Component {
                         console.log(res);
                         if(res.data.code === 200) {
                             message.success('注册成功')
+                            this.props.history.push('/login')
                         } else {
                             message.error('注册失败')
                         }
